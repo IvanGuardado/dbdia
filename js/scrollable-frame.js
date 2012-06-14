@@ -10,15 +10,22 @@ dbdia.ScrollableFrame = function(options){
     this.initialize();
     
     //demo
-    var entity = new dbdia.Entity(this._ctx, {x: 10, y: 10});
-    var entity2 = new dbdia.Entity(this._ctx, {x: 100, y: 400});
-    var entity3 = new dbdia.Entity(this._ctx, {x: 500, y: 300});
-    entity.addConstraint({
-        entity: entity2
+    var entity2 = new dbdia.Entity(this._ctx, {
+        name: 'pedido',
+        coords: {x: 200, y: 150},
     });
-    entity.addConstraint({
-        entity: entity3
-    })
+    
+    var entity3 = new dbdia.Entity(this._ctx, {
+        name: 'producto',
+        coords: {x: 500, y: 400},
+    });
+    
+    var entity = new dbdia.Entity(this._ctx, {
+        name: 'producto_pedido',
+        coords: {x: 500, y: 100},
+        constraints: [entity2, entity3]
+    });
+    
     this.addEntity(entity);
     this.addEntity(entity2);
     this.addEntity(entity3);
@@ -151,6 +158,11 @@ dbdia.ScrollableFrame.prototype.addEntity = function(entity){
 
 dbdia.ScrollableFrame.prototype.draw = function(){
     var i;
+    /* Draw constraints before entities to keep behind it */
+    for(i=0; i<this._entities.length; i++){
+        this._entities[i].drawConstraints();
+    }
+    
     for(i=0; i<this._entities.length; i++){
         this._entities[i].draw(this._ctx);
     }
